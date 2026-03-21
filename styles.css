@@ -84,7 +84,7 @@ h6 {
   padding: 1rem 0;
 }
 
-.brand__logo {
+.brand__logo img {
   border-radius: 999px;
 }
 
@@ -121,4 +121,42 @@ h6 {
   border-top: 1px solid var(--border);
   padding: 1.25rem 0;
   color: var(--muted);
+}
+
+.content-section {
+  padding: 3rem 0;
+}
+
+.content-section h2 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.5rem, 1.8vw + 1rem, 2rem);
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.content-section p {
+  margin: 0 0 1.25rem;
+  max-width: 70ch;
+  line-height: 1.65;
+}
+
+.content-section strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.content-section ol,
+.content-section ul {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+  max-width: 70ch;
+}
+
+.content-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.65;
+}
+
+.content-section li:last-child {
+  margin-bottom: 0;
 }
