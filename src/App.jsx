@@ -11,32 +11,22 @@ export default function App() {
 
       <header className="site-header">
         <div className="container">
-          <div className="brand">
-            <div className="brand__logo" aria-hidden="true">
-              <svg
+          <nav className="brand" aria-label="Логотип та інформація про університет">
+            <div className="brand__logo">
+              <img
+                src="/assets/favicon-48x48.png"
+                alt="Логотип університету"
                 width="48"
                 height="48"
-                viewBox="0 0 48 48"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                role="img"
-                aria-label="Логотип університету"
-              >
-                <rect width="48" height="48" rx="24" fill="#111827" />
-                <img
-                  src="/public/assets/favicon-48x48.png"
-                  alt="Логотип університету"
-                  width="48"
-                  height="48"
-                />
-                
-              </svg>
+                loading="eager"
+                decoding="async"
+              />
             </div>
             <div className="brand__text">
               <p className="brand__university">СумДУ • Факультет ЕлІТ</p>
               <p className="brand__student">Студент: Шевченко К.О.</p>
             </div>
-          </div>
+          </nav>
         </div>
       </header>
 

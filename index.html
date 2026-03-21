@@ -14,6 +14,22 @@
     <meta name="robots" content="index,follow" />
     <meta name="theme-color" content="#0b1220" />
 
+    <!-- Open Graph -->
+    <meta property="og:title" content="Лендінг бакалаврської роботи" />
+    <meta property="og:description" content="Односторінковий сайт для представлення бакалаврської роботи: тема, мета, завдання та контактна інформація." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://example.com/" />
+    <meta property="og:image" content="https://example.com/assets/favicon-256x256.png" />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="256" />
+    <meta property="og:locale" content="uk_UA" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Лендінг бакалаврської роботи" />
+    <meta name="twitter:description" content="Односторінковий сайт для представлення бакалаврської роботи: тема, мета, завдання та контактна інформація." />
+    <meta name="twitter:image" content="https://example.com/assets/favicon-256x256.png" />
+
     <link rel="icon" href="/assets/favicon.ico" sizes="any" />
     <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/assets/favicon-180x180.png" />
@@ -23,5 +39,35 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Лендінг бакалаврської роботи",
+      "description": "Односторінковий сайт для представлення бакалаврської роботи: тема, мета, завдання та контактна інформація.",
+      "url": "https://example.com/",
+      "inLanguage": "uk-UA",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Бакалаврська робота",
+        "url": "https://example.com/"
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "Бакалаврська робота"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Шевченко К.О."
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "СумДУ • Факультет ЕлІТ"
+      },
+      "dateModified": "2026-03-19"
+    }
+    </script>
   </body>
 </html>
