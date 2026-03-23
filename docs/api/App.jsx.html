@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSDoc: Source: App.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css" />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css" />
+  </head>
+
+  <body>
+    <div id="main">
+      <h1 class="page-title">Source: App.jsx</h1>
+
+      <section>
+        <article>
+          <pre
+            class="prettyprint source linenums"
+          ><code>import { useState, useEffect } from 'react';
+
+/**
+ * Supported UI themes.
+ *
+ * @typedef {'light' | 'dark'} Theme
+ */
+
+/**
+ * Root application component for the landing page.
+ *
+ * Responsibilities:
+ * - Stores the current UI theme in `localStorage`.
+ * - Applies the theme via `document.documentElement[data-theme]`.
+ * - Renders the static landing content.
+ *
+ * @returns {JSX.Element} Application UI.
+ */
+function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  /**
+   * Toggles the UI theme between `light` and `dark`.
+   *
+   * Side effects:
+   * - Persists the updated theme to `localStorage`.
+   * - Updates `document.documentElement[data-theme]`.
+   *
+   * @returns {void}
+   */
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
+
+  return (
+    &lt;>
+      &lt;a href="#main" className="skip-link">
+        Перейти до основного вмісту
+      &lt;/a>
+
+      &lt;header className="site-header">
+        &lt;div className="container">
+          &lt;nav className="brand" aria-label="Логотип та інформація про університет">
+            &lt;div className="brand__logo">
+              &lt;img
+                src="/assets/favicon-64x64.png"
+                alt="Логотип університету"
+                width="64"
+                height="64"
+                loading="eager"
+                decoding="async"
+              />
+            &lt;/div>
+            &lt;div className="brand__text">
+              &lt;p className="brand__university">СумДУ • Факультет ЕлІТ&lt;/p>
+              &lt;p className="brand__student">Студент: Шевченко К.О.&lt;/p>
+            &lt;/div>
+          &lt;/nav>
+        &lt;/div>
+      &lt;/header>
+
+      &lt;main id="main" className="site-main">
+        &lt;div className="container">
+          &lt;section className="hero">
+            &lt;h1 id="page-title">
+              Інформаційна система тестування знань на базі чат-бота в месенджері Telegram
+            &lt;/h1>
+            &lt;p className="lead">
+              Розробка односторінкового сайту для представлення бакалаврської роботи з використанням
+              React, Vite та системи контролю версій Git Flow.
+            &lt;/p>
+          &lt;/section>
+
+          &lt;section className="content-section" aria-labelledby="about-title">
+            &lt;div className="container">
+              &lt;h2 id="about-title">Про проєкт&lt;/h2>
+              &lt;p>
+                &lt;strong>Назва (українською):&lt;/strong> Інформаційна система тестування знань на базі
+                чат-бота в месенджері Telegram
+                &lt;br />
+                &lt;strong>Назва (англійською):&lt;/strong> Information System for Knowledge Testing Based
+                on a Telegram Chatbot
+              &lt;/p>
+              &lt;p>
+                &lt;strong>Предмет:&lt;/strong> Технічна підтримка програмного забезпечення (ТППЗ)
+                &lt;br />
+                &lt;strong>Завдання:&lt;/strong> Розробка односторінкового веб-сайту для представлення
+                бакалаврської роботи з використанням сучасних веб-технологій та методології Git
+                Flow.
+              &lt;/p>
+              &lt;p>
+                &lt;strong>Короткий опис:&lt;/strong> Проєкт демонструє практичне застосування сучасних
+                веб-технологій (React, Vite) та методології Git Flow при створенні адаптивного,
+                SEO-оптимізованого лендінгу для представлення бакалаврської роботи.
+              &lt;/p>
+              &lt;p>
+                &lt;strong>Ключові слова:&lt;/strong> Telegram, чат-бот, тестування знань, інформаційна
+                система, React, Vite, Git Flow, лендінг, SEO, доступність, адаптивність,
+                веб-розробка, бакалаврська робота, курсова робота, ТППЗ
+              &lt;/p>
+            &lt;/div>
+          &lt;/section>
+
+          &lt;section className="content-section" aria-labelledby="relevance-title">
+            &lt;div className="container">
+              &lt;h2 id="relevance-title">Актуальність теми&lt;/h2>
+              &lt;p>
+                В умовах стрімкого розвитку освітніх технологій та широкого впровадження месенджерів
+                на базі чат-ботів, створення інформаційних систем для тестування знань стає
+                актуальним завданням. Такі рішення дозволяють автоматизувати перевірку теоретичних
+                знань студентів, надувати миттєвий зворотний зв&amp;apos;язок та інтегруватися з
+                сучасними цифровими освітніми платформами.
+              &lt;/p>
+            &lt;/div>
+          &lt;/section>
+
+          &lt;section className="content-section" aria-labelledby="goal-title">
+            &lt;div className="container">
+              &lt;h2 id="goal-title">Мета КРБ&lt;/h2>
+              &lt;p>
+                Розробити функціональну інформаційну систему тестування знань на базі чат-бота в
+                месенджері Telegram, що демонструє володіння сучасними технологіями веб-розробки
+                (React, Vite), системою контролю версій Git Flow та принципами створення доступних і
+                SEO-оптимізованих інтерфейсів.
+              &lt;/p>
+            &lt;/div>
+          &lt;/section>
+
+          &lt;section className="content-section" aria-labelledby="tasks-title">
+            &lt;div className="container">
+              &lt;h2 id="tasks-title">Основні завдання КРБ&lt;/h2>
+              &lt;ol>
+                &lt;li>Проаналізувати існуючі рішення для тестування знань на базі чат-ботів&lt;/li>
+                &lt;li>Спроєктувати архітектуру інформаційної системи та інтерфейсу чат-бота&lt;/li>
+                &lt;li>Розробити бекенд-логіку для обробки запитань та перевірки відповідей&lt;/li>
+                &lt;li>Інтегрувати чат-бота з API Telegram та забезпечити безперебійну роботу&lt;/li>
+                &lt;li>Реалізувати базові вимоги SEO та доступності для веб-інтерфейсу&lt;/li>
+                &lt;li>Продемонструвати використання стратегії гілкування Git Flow&lt;/li>
+              &lt;/ol>
+            &lt;/div>
+          &lt;/section>
+
+          &lt;section className="content-section" aria-labelledby="methodology-title">
+            &lt;div className="container">
+              &lt;h2 id="methodology-title">Методологія виконання КРБ&lt;/h2>
+              &lt;p>
+                Робота виконується з використанням методології Git Flow для систематичного
+                управління версіями. Для фронтенду застосовується компонентний підхід на базі React,
+                стилізація виконується з використанням CSS-змінних та сучасних технік адаптивної
+                верстки. Особлива увага приділяється семантичній розмітці, доступності та
+                SEO-оптимізації. Бекенд розробляється з урахуванням принципів RESTful API та безпеки
+                даних.
+              &lt;/p>
+            &lt;/div>
+          &lt;/section>
+
+          &lt;section className="content-section" aria-labelledby="results-title">
+            &lt;div className="container">
+              &lt;h2 id="results-title">Очікувані результати КРБ&lt;/h2>
+              &lt;ul>
+                &lt;li>Готова інформаційна система тестування знань з інтеграцією Telegram&lt;/li>
+                &lt;li>Повністю задокументований процес розробки в системі Git&lt;/li>
+                &lt;li>Портфоліо-проєкт для подальшого професійного розвитку&lt;/li>
+              &lt;/ul>
+            &lt;/div>
+          &lt;/section>
+
+          &lt;section className="content-section" aria-labelledby="contacts-title">
+            &lt;div className="container">
+              &lt;h2 id="contacts-title">Контактна інформація&lt;/h2>
+              &lt;p>
+                &lt;strong>Автор:&lt;/strong> Шевченко Кирил Олексійович
+                &lt;br />
+                &lt;strong>Університет:&lt;/strong> Сумський державний університет
+                &lt;br />
+                &lt;strong>Факультет:&lt;/strong> Електроніки та інформаційних технологій
+                &lt;br />
+                &lt;strong>Email:&lt;/strong> shevchenko.kyryl@student.sumdu.edu.ua
+              &lt;/p>
+            &lt;/div>
+          &lt;/section>
+        &lt;/div>
+      &lt;/main>
+
+      &lt;footer className="site-footer">
+        &lt;div className="container">
+          &lt;p>2026 Шевченко Кирил Олексійович • СумДУ • Факультет ЕлІТ • Курсова робота (КРБ)&lt;/p>
+        &lt;/div>
+      &lt;/footer>
+
+      &lt;button className="theme-toggle" onClick={toggleTheme} aria-label="Перемкнути тему">
+        {theme === 'light' ? '🌙' : '☀️'}
+      &lt;/button>
+    &lt;/>
+  );
+}
+
+export default App;
+</code></pre>
+        </article>
+      </section>
+    </div>
+
+    <nav>
+      <h2><a href="index.html">Home</a></h2>
+      <h3>Global</h3>
+      <ul>
+        <li><a href="global.html#App">App</a></li>
+        <li><a href="global.html#rootElement">rootElement</a></li>
+      </ul>
+    </nav>
+
+    <br class="clear" />
+
+    <footer>
+      Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Mar
+      23 2026 19:14:25 GMT+0100 (Central European Standard Time)
+    </footer>
+
+    <script>
+      prettyPrint();
+    </script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
+</html>
