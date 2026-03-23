@@ -4,6 +4,8 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "allowJs": true,
+    "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "strict": true
   },

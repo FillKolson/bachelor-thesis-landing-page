@@ -3,7 +3,16 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+/**
+ * Application entry point.
+ *
+ * Mounts the root React component into the DOM element with id `root`.
+ *
+ * @type {HTMLElement}
+ */
+const rootElement = document.getElementById('root');
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
