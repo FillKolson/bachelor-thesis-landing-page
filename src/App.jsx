@@ -1,5 +1,21 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Supported UI themes.
+ *
+ * @typedef {'light' | 'dark'} Theme
+ */
+
+/**
+ * Root application component for the landing page.
+ *
+ * Responsibilities:
+ * - Stores the current UI theme in `localStorage`.
+ * - Applies the theme via `document.documentElement[data-theme]`.
+ * - Renders the static landing content.
+ *
+ * @returns {JSX.Element} Application UI.
+ */
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
@@ -8,6 +24,15 @@ function App() {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  /**
+   * Toggles the UI theme between `light` and `dark`.
+   *
+   * Side effects:
+   * - Persists the updated theme to `localStorage`.
+   * - Updates `document.documentElement[data-theme]`.
+   *
+   * @returns {void}
+   */
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
