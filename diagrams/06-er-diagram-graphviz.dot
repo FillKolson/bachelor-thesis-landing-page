@@ -1,0 +1,30 @@
+// ER-діаграма (Graphviz). rank=same з shape=record дає помилки lost edge у dot — не використовуємо.
+digraph ERD {
+    rankdir=LR;
+    node [shape=record, style=rounded];
+
+    Users [label="{Users | user_id: INT [PK]\l telegram_id: VARCHAR [UK]\l username: VARCHAR\l email: VARCHAR [UK]\l first_name: VARCHAR\l last_name: VARCHAR\l created_at: TIMESTAMP\l last_login: TIMESTAMP\l is_active: BOOLEAN}"];
+
+    Tests [label="{Tests | test_id: INT [PK]\l title: VARCHAR\l description: TEXT\l creator_id: INT [FK]\l category_id: INT [FK]\l created_at: TIMESTAMP\l question_count: INT\l time_limit: INT\l pass_score: DECIMAL\l is_published: BOOLEAN}"];
+
+    Questions [label="{Questions | question_id: INT [PK]\l test_id: INT [FK]\l text: TEXT\l question_type: VARCHAR\l order_num: INT\l difficulty: VARCHAR\l explanation: TEXT\l created_at: TIMESTAMP}"];
+
+    AnswerOptions [label="{Answer_Options | option_id: INT [PK]\l question_id: INT [FK]\l text: VARCHAR\l is_correct: BOOLEAN\l order_num: INT\l explanation: TEXT}"];
+
+    TestAttempts [label="{Test_Attempts | attempt_id: INT [PK]\l user_id: INT [FK]\l test_id: INT [FK]\l started_at: TIMESTAMP\l finished_at: TIMESTAMP\l score: DECIMAL\l correct_count: INT\l total_count: INT\l is_passed: BOOLEAN\l completion_status: VARCHAR}"];
+
+    UserAnswers [label="{User_Answers | answer_id: INT [PK]\l attempt_id: INT [FK]\l question_id: INT [FK]\l option_id: INT [FK]\l text_answer: VARCHAR\l is_correct: BOOLEAN\l time_spent_seconds: INT}"];
+
+    Categories [label="{Categories | category_id: INT [PK]\l name: VARCHAR\l description: TEXT\l color: VARCHAR}"];
+
+    // Relationships
+    Users -> Tests [label="creates", color="blue"];
+    Users -> TestAttempts [label="takes", color="green"];
+    Tests -> Questions [label="contains", color="purple"];
+    Questions -> AnswerOptions [label="has", color="orange"];
+    TestAttempts -> UserAnswers [label="records", color="red"];
+    AnswerOptions -> UserAnswers [label="selected_by", color="brown"];
+    Tests -> Categories [label="has_category", color="gray"];
+
+    // Опис: вузли — таблиці з атрибутами; ребра — зв’язки 1:N; кольори — типи зв’язків; rankdir=LR для читабельності.
+}

@@ -1,0 +1,85 @@
+@startuml Telegram-Knowledge-Testing-Process
+
+title Knowledge Testing System - BPMN Process Flow
+
+start
+:User launches the bot;
+:Bot displays main menu;
+
+switch (User action?)
+case (Start Test)
+    :Bot retrieves available tests;
+    :Display test list;
+    :User selects test;
+    :Retrieve first question;
+case (View Results)
+    :Bot retrieves user results from DB;
+    :Display results summary;
+    :User views statistics;
+    stop
+case (Help/Settings)
+    :Display help or settings;
+    stop
+endswitch
+
+:Send first question to user;
+:Bot waits for response;
+
+repeat
+    switch (User answered?)
+    case (Yes)
+        :Receive user answer;
+        :Check answer correctness;
+        :Update current attempt;
+    case (Timeout/Skip)
+        :Mark question as skipped;
+    case (Quit)
+        :Finish test early;
+        :Go to calculate results;
+    endswitch
+
+    if (More questions?) then (Yes)
+        :Retrieve next question;
+        :Send question to user;
+    else (No - Test Complete)
+        break
+    endif
+repeat while (Processing questions)
+
+:Calculate final score;
+:Store result in database;
+:Save timestamp and answers;
+:Send result to user;
+:Display:
+   - Final score
+   - Correct/incorrect count
+   - Performance metrics;
+:Ask if user wants to:
+   - Retake test
+   - Try different test
+   - View statistics;
+
+if (User wants to continue?) then (Yes)
+    :Return to main menu;
+    note right
+        Process loops back to main menu
+        User can take another test
+    end note
+else (No)
+    :End conversation;
+endif
+
+stop
+
+note left
+Telegram user starts bot
+using /start command
+end note
+
+note right
+Score = (Correct Answers / Total Questions) * 100
+Results stored in PostgreSQL
+end note
+
+@enduml
+

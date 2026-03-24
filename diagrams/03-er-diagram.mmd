@@ -1,0 +1,89 @@
+erDiagram
+    USERS ||--o{ TESTS : creates
+    USERS ||--o{ TEST_ATTEMPTS : takes
+    TESTS ||--o{ QUESTIONS : contains
+    QUESTIONS ||--o{ ANSWER_OPTIONS : has
+    TEST_ATTEMPTS ||--o{ USER_ANSWERS : records
+    ANSWER_OPTIONS ||--o{ USER_ANSWERS : selected_by
+
+    USERS {
+        int user_id PK
+        string telegram_id UK "Unique Telegram ID"
+        string username
+        string email UK
+        string first_name
+        string last_name
+        timestamp created_at "Account creation timestamp"
+        timestamp last_login "Last login timestamp"
+        boolean is_active "Account status"
+    }
+
+    TESTS {
+        int test_id PK
+        string title "Test name"
+        string description "Test description"
+        int creator_id FK "User who created the test"
+        int category_id FK "Test category"
+        timestamp created_at
+        timestamp updated_at
+        int question_count "Total questions in test"
+        int time_limit "Time limit in minutes (null = no limit)"
+        decimal pass_score "Score required to pass (0-100)"
+        boolean is_published "Is test available to users"
+    }
+
+    QUESTIONS {
+        int question_id PK
+        int test_id FK
+        string text "Question text"
+        string question_type "single_choice|multiple_choice|text_answer"
+        int order_num "Order in test"
+        string difficulty "easy|medium|hard"
+        text explanation "Answer explanation for users"
+        timestamp created_at
+    }
+
+    ANSWER_OPTIONS {
+        int option_id PK
+        int question_id FK
+        string text "Option text"
+        boolean is_correct "Is this option correct"
+        int order_num "Display order"
+        text explanation "Why this is/isn't correct"
+    }
+
+    TEST_ATTEMPTS {
+        int attempt_id PK
+        int user_id FK
+        int test_id FK
+        timestamp started_at
+        timestamp finished_at
+        decimal score "Final score (0-100)"
+        int correct_count "Number of correct answers"
+        int total_count "Total questions answered"
+        boolean is_passed "Did user pass the test"
+        string completion_status "completed|abandoned|timeout"
+    }
+
+    USER_ANSWERS {
+        int answer_id PK
+        int attempt_id FK
+        int question_id FK
+        int option_id FK "For choice-based questions"
+        string text_answer "For text-based questions"
+        boolean is_correct "Was answer marked as correct"
+        int time_spent_seconds "Time user spent on this question"
+    }
+
+    QUESTION_CATEGORIES {
+        int category_id PK
+        string name "Category name"
+        string description
+        string color "Color code for UI"
+    }
+
+    TEST_CATEGORIES {
+        int test_category_id PK
+        int test_id FK
+        int category_id FK
+    }

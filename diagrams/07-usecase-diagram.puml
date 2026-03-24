@@ -1,0 +1,85 @@
+@startuml Telegram-Knowledge-Testing-UseCase
+
+title Use Case Diagram - Knowledge Testing System
+
+actor "End User" as EU
+actor "Test Creator" as TC
+actor "Administrator" as ADMIN
+actor "Telegram Platform" as TG
+
+rectangle "Knowledge Testing System" {
+    usecase "Register Account" as UC1
+    usecase "Login" as UC2
+    usecase "Browse Tests" as UC3
+    usecase "Start Test" as UC4
+    usecase "Answer Questions" as UC5
+    usecase "Submit Test" as UC6
+    usecase "View Results" as UC7
+    usecase "View Statistics" as UC8
+
+    usecase "Create Test" as UC9
+    usecase "Edit Test" as UC10
+    usecase "Publish Test" as UC11
+    usecase "View Test Analytics" as UC12
+
+    usecase "Manage Users" as UC13
+    usecase "Manage Tests" as UC14
+    usecase "View System Logs" as UC15
+
+    usecase "Send Messages" as UC16
+    usecase "Receive Updates" as UC17
+}
+
+' End User interactions
+EU --> UC1
+EU --> UC2
+EU --> UC3
+EU --> UC4
+EU --> UC5
+EU --> UC6
+UC4 .> UC5 : include
+UC6 .> UC7 : include
+EU --> UC8
+
+' Test Creator interactions
+TC --> UC9
+TC --> UC10
+TC --> UC11
+TC --> UC12
+TC --> UC2
+
+' Administrator interactions
+ADMIN --> UC13
+ADMIN --> UC14
+ADMIN --> UC15
+
+' Telegram Platform interactions
+TG --> UC16
+TG --> UC17
+UC2 .> UC16 : include
+UC5 .> UC16 : include
+UC7 .> UC16 : include
+
+' Generalizations
+UC3 .> UC2 : extend
+UC8 .> UC7 : extend
+UC12 .> UC8 : extend
+
+note right of UC1
+User creates account
+with Telegram ID
+end note
+
+note right of UC4
+Prerequisites:
+- User logged in
+- Test exists
+end note
+
+note right of UC9
+Only test creators
+can create tests
+end note
+
+@enduml
+

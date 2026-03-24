@@ -11,6 +11,7 @@
 3. Налаштувати `ingress` для HTTPS.
 
 ### Приклад k8s/кваліфікацій:
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -27,10 +28,10 @@ spec:
         app: react-frontend
     spec:
       containers:
-      - name: web
-        image: your-registry/react-frontend:latest
-        ports:
-        - containerPort: 80
+        - name: web
+          image: your-registry/react-frontend:latest
+          ports:
+            - containerPort: 80
 ```
 
 ## Terraform (мінімум)

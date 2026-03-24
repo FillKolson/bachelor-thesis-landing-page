@@ -1,0 +1,82 @@
+@startuml
+
+title Data Flow Diagram - Knowledge Testing System
+legend top
+Level 0 (Context Diagram) - Gane-Sarson Notation
+Shows main processes and external entities
+end legend
+
+' External entities
+rectangle "Telegram User" as User
+rectangle "Administrator" as Admin
+rectangle "Telegram API" as TgApi
+
+' Processes
+rectangle "1 Manage Users" as P1
+rectangle "2 Manage Tests" as P2
+rectangle "3 Conduct Test" as P3
+rectangle "4 Calculate Results" as P4
+
+' Data stores
+database "User Data Store" as DS1
+database "Test Library" as DS2
+database "Results Archive" as DS3
+database "Session Cache" as DS4
+
+' Data flows
+User --> P1 : Login Request\nuser_credentials
+P1 --> DS1 : User Validated\nread/write
+DS1 --> P1 : User Profile
+P1 --> User : Session Token
+
+User --> P2 : View Tests\ntest_request
+P2 --> DS2 : Available Tests\nread
+DS2 --> P2 : Test List
+P2 --> User : Test List
+
+User --> P3 : Start Test\ntest_selection
+DS2 --> P3 : Question Data\nread
+P3 --> User : Questions
+User --> P3 : Answers\nuser_answers
+P3 --> DS3 : Attempt Record\nwrite
+
+P3 --> P4 : Answers for Analysis\nanswers
+DS2 --> P4 : Answer Key\nread
+P4 --> DS3 : Score Calculation\nwrite
+P4 --> User : Result Notification\nresult_data
+
+Admin --> P2 : Create Test\ntest_creation
+P2 --> DS2 : Store Test\nwrite
+
+Admin --> P4 : View Analytics\nanalytics_request
+DS3 --> P4 : Result Data\nread
+P4 --> Admin : Statistics\nanalytics_report
+
+TgApi --> P1 : Message Events\nwebhook
+P1 --> TgApi : Send Message\nsendMessage
+P3 --> TgApi : Send Question\nsendMessage
+P4 --> TgApi : Send Result\nsendMessage
+
+note bottom of P1
+Handles user authentication
+and session management
+end note
+
+note bottom of P2
+Manages test creation,
+updating and retrieval
+end note
+
+note bottom of P3
+Handles test execution
+and answer collection
+end note
+
+note bottom of P4
+Processes answers,
+calculates scores,
+generates reports
+end note
+
+@enduml
+
