@@ -133,6 +133,7 @@
 ### Розгортання (для release engineer / DevOps)
 
 Документація знаходиться в `docs/`:
+
 - `docs/deployment.md` — production deployment
 - `docs/update.md` — оновлення
 - `docs/backup.md` — backup & rollback

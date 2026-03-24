@@ -1,0 +1,64 @@
+@startuml Telegram-Knowledge-Testing-System
+
+title Knowledge Testing System - Component Architecture
+
+package "Client Layer" {
+    component "Telegram App" as TG_APP
+    component "Web Landing\n(React/Vite)" as WEB_APP
+}
+
+package "API Layer" {
+    component "Telegram Bot Server\n(Node.js)" as BOT_SERVER
+    component "REST API Server\n(Node.js/Python)" as REST_API
+}
+
+package "Business Logic" {
+    component "Authentication Service" as AUTH_SVC
+    component "Test Management Service" as TEST_SVC
+    component "Result Processing Service" as RESULT_SVC
+}
+
+package "Data Layer" {
+    database "PostgreSQL\nDatabase" as DB
+    database "Redis\nCache" as CACHE
+}
+
+package "External Services" {
+    component "Telegram Bot API" as TG_API
+    component "File Storage\n(S3/MinIO)" as STORAGE
+}
+
+TG_APP ..> BOT_SERVER : "Long Polling\nHTTP"
+WEB_APP ..> REST_API : "HTTP/REST API"
+
+BOT_SERVER --> AUTH_SVC : "Validate User\nGet User Profile"
+BOT_SERVER --> TEST_SVC : "Get Tests\nGet Questions"
+BOT_SERVER --> RESULT_SVC : "Submit Answer\nGet Results"
+
+REST_API --> AUTH_SVC : "User Registration\nAuthentication"
+REST_API --> TEST_SVC : "Get All Tests\nCreate Test"
+REST_API --> RESULT_SVC : "Get Results\nAnalytics"
+
+AUTH_SVC --> DB : "Read/Write\nUsers"
+TEST_SVC --> DB : "Read/Write\nTests & Questions"
+TEST_SVC --> CACHE : "Cache\nActive Tests"
+RESULT_SVC --> DB : "Read/Write\nAttempts & Answers"
+
+BOT_SERVER ..> TG_API : "sendMessage\nreceiveUpdates"
+REST_API ..> STORAGE : "Upload/Download"
+
+note right of BOT_SERVER
+  Handles Telegram user interactions
+  - Manages conversation flow
+  - Sends/receives messages
+  - Delegates business logic
+end note
+
+note right of REST_API
+  Provides programmatic access
+  - Question/Answer retrieval
+  - Result analytics
+  - Admin features
+end note
+
+@enduml

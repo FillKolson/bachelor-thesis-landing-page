@@ -1,0 +1,105 @@
+@startuml Telegram-Knowledge-Testing-Deployment
+
+title Knowledge Testing System - Deployment Diagram
+
+artifact "Telegram" as TELEGRAM
+
+note right of TELEGRAM
+Third-party service
+end note
+
+node "Client Devices" as CLIENT {
+    artifact "Telegram App\n(Mobile/Desktop)" as TG_CLIENT
+    artifact "Web Browser\n(React App)" as WEB_CLIENT
+}
+
+node "kubernetes Cluster / Docker Swarm" as DOCKER_INFRA {
+
+    node "API Server Container" as API_NODE {
+        artifact "Node.js/Python\nBOT Service & REST API" as BOT_API
+        artifact "Environment\nConfiguration" as ENV_BOT
+    }
+
+    node "Worker Container" as WORKER_NODE {
+        artifact "Result Processing\nWorker" as WORKER
+        artifact "Background Jobs" as BG_JOBS
+    }
+}
+
+node "Database Server" as DB_SERVER {
+    database "PostgreSQL" as PG_DB {
+        file "Users Table"
+        file "Tests Table"
+        file "Questions Table"
+        file "Results Table"
+    }
+}
+
+node "Cache Server" as CACHE_SERVER {
+    database "Redis" as CACHE_DB {
+        file "Session Cache"
+        file "Test Cache"
+        file "Results Cache"
+    }
+}
+
+node "External Storage" as STORAGE {
+    artifact "S3 / MinIO\nFile Storage" as S3_STORAGE {
+        file "Test Documents"
+        file "User Files"
+    }
+}
+
+node "Reverse Proxy / Load Balancer" as LB {
+    artifact "nginx\n(Load Balancing)" as NGINX
+    artifact "SSL/TLS\nCertificates" as SSL_CERT
+}
+
+CLIENT --> TELEGRAM : "Telegram API"
+CLIENT --> LB : "HTTPS"
+
+TELEGRAM --> BOT_API : "Outgoing Webhook"
+BOT_API --> TELEGRAM : "sendMessage API"
+
+LB --> BOT_API : "Route HTTP"
+LB --> NGINX : "Load Balance"
+
+BOT_API --> PG_DB : "SQL Queries"
+BOT_API --> CACHE_DB : "Cache Reads/Writes"
+BOT_API --> WORKER : "Async Tasks"
+
+WORKER --> PG_DB : "SQL Writes"
+WORKER --> CACHE_DB : "Cache Updates"
+
+BOT_API --> S3_STORAGE : "Upload/Download Files"
+
+DB_SERVER --|> CACHE_SERVER : "Invalidate Cache"
+
+CACHE_DB --|> PG_DB : "Backup to DB"
+
+note right of DOCKER_INFRA
+Deploy containers using:
+- Docker Compose (development)
+- Kubernetes (production)
+Each service can scale independently
+end note
+
+note bottom of LB
+nginx provides:
+- SSL termination
+- Load balancing
+- Static file serving
+- Reverse proxying
+end note
+
+note right of DB_SERVER
+PostgreSQL stores:
+- User profiles
+- Test definitions
+- Questions & answers
+- Attempt records
+- Results
+end note
+
+@enduml
+
