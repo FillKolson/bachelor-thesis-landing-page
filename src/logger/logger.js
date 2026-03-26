@@ -3,6 +3,15 @@ import { createId } from '../lib/id.js';
 const STORAGE_KEY = 'app.logBuffer.v1';
 const ANON_USER_ID_KEY = 'app.anonUserId.v1';
 const SESSION_ID_KEY = 'app.sessionId.v1';
+const FLUSH_DEBOUNCE_MS = 250;
+const PERF_MODE_KEY = 'app:loggerPerfMode.v1';
+
+/**
+ * @typedef {'legacy'|'optimized'} LoggerPerfMode
+ */
+
+/** @type {LoggerPerfMode} */
+let perfMode = /** @type {LoggerPerfMode} */ ('optimized');
 
 /**
  * @typedef {'DEBUG'|'INFO'|'WARNING'|'ERROR'|'CRITICAL'} LogLevel
@@ -38,6 +47,18 @@ const LEVELS = /** @type {const} */ ({
 /** @type {LoggerConfig | null} */
 let config = null;
 
+/** @type {LogRecord[] | null} */
+let bufferCache = null;
+
+/** @type {number | null} */
+let flushTimer = null;
+
+/** @type {string | null} */
+let cachedAnonUserId = null;
+
+/** @type {string | null} */
+let cachedSessionId = null;
+
 /**
  * Initializes logger configuration once per page load.
  *
@@ -70,7 +91,60 @@ export function initLogger() {
       : 7 * 24 * 60 * 60 * 1000;
 
   config = { minLevel, maxEntries, maxAgeMs };
+
+  // Perf mode switch for profiling "before vs after" in the same build.
+  const storedPerfMode = localStorage.getItem(PERF_MODE_KEY);
+  if (storedPerfMode === 'legacy' || storedPerfMode === 'optimized') {
+    perfMode = storedPerfMode;
+  }
+
+  // Load buffer once at init for faster hot-path logging.
+  bufferCache = readLogBuffer();
+
+  // Best-effort flush on tab hide/unload.
+  const flushNow = () => {
+    try {
+      if (bufferCache) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(bufferCache));
+      }
+    } catch {
+      // ignore storage errors
+    }
+  };
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      flushNow();
+    }
+  });
+  window.addEventListener('beforeunload', flushNow);
+
   return config;
+}
+
+/**
+ * Sets logger perf mode (used for profiling comparisons).
+ *
+ * `legacy`: sync storage I/O per log record (baseline)
+ * `optimized`: in-memory cache + debounced persistence
+ *
+ * @param {LoggerPerfMode} mode
+ */
+export function setLoggerPerfMode(mode) {
+  perfMode = mode;
+  try {
+    localStorage.setItem(PERF_MODE_KEY, mode);
+  } catch {
+    // ignore storage errors
+  }
+}
+
+/**
+ * Returns current logger perf mode.
+ *
+ * @returns {LoggerPerfMode}
+ */
+export function getLoggerPerfMode() {
+  return perfMode;
 }
 
 /**
@@ -136,8 +210,28 @@ function getOrCreateStorageId(storageType, key) {
  * @returns {Record<string, unknown>}
  */
 function withStandardContext(context) {
-  const userId = getOrCreateStorageId('localStorage', ANON_USER_ID_KEY);
-  const sessionId = getOrCreateStorageId('sessionStorage', SESSION_ID_KEY);
+  if (perfMode === 'legacy') {
+    const userId = getOrCreateStorageId('localStorage', ANON_USER_ID_KEY);
+    const sessionId = getOrCreateStorageId('sessionStorage', SESSION_ID_KEY);
+    const route = window.location.hash || '';
+
+    return {
+      ...(context || {}),
+      userId,
+      sessionId,
+      route,
+    };
+  }
+
+  if (!cachedAnonUserId) {
+    cachedAnonUserId = getOrCreateStorageId('localStorage', ANON_USER_ID_KEY);
+  }
+  if (!cachedSessionId) {
+    cachedSessionId = getOrCreateStorageId('sessionStorage', SESSION_ID_KEY);
+  }
+
+  const userId = cachedAnonUserId;
+  const sessionId = cachedSessionId;
   const route = window.location.hash || '';
 
   return {
@@ -155,6 +249,22 @@ function withStandardContext(context) {
  */
 function writeLogBuffer(records) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+function persistBufferDebounced() {
+  if (flushTimer) {
+    window.clearTimeout(flushTimer);
+  }
+  flushTimer = window.setTimeout(() => {
+    flushTimer = null;
+    try {
+      if (bufferCache) {
+        writeLogBuffer(bufferCache);
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, FLUSH_DEBOUNCE_MS);
 }
 
 /**
@@ -200,10 +310,19 @@ export function logRecord(partial) {
     context: mergedContext,
   });
 
-  const buffer = readLogBuffer();
-  buffer.push(record);
-  const retained = applyRetention(buffer);
-  writeLogBuffer(retained);
+  if (perfMode === 'legacy') {
+    const buffer = readLogBuffer();
+    buffer.push(record);
+    const retained = applyRetention(buffer);
+    writeLogBuffer(retained);
+  } else {
+    if (!bufferCache) {
+      bufferCache = readLogBuffer();
+    }
+    bufferCache.push(record);
+    bufferCache = applyRetention(bufferCache);
+    persistBufferDebounced();
+  }
 
   // Console handler: keep it quiet (no-console is configured to allow warn/error only).
   if (partial.level === 'WARNING') {
@@ -258,7 +377,7 @@ export function logger(moduleName) {
  * @returns {LogRecord[]}
  */
 export function getRecentLogs(limit = 50) {
-  const buffer = readLogBuffer();
+  const buffer = perfMode === 'legacy' ? readLogBuffer() : bufferCache || readLogBuffer();
   if (buffer.length <= limit) {
     return buffer;
   }
@@ -270,6 +389,7 @@ export function getRecentLogs(limit = 50) {
  */
 export function clearLogs() {
   localStorage.removeItem(STORAGE_KEY);
+  bufferCache = [];
 }
 
 /**

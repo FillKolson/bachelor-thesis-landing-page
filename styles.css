@@ -37,6 +37,74 @@
   --letter-spacing-wide: 0.025em;
 }
 
+/* --- Performance harness page --- */
+.perf-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.perf-controls button {
+  background: var(--accent);
+  color: white;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.perf-controls button:hover {
+  background: var(--accent-hover);
+}
+
+.perf-label {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.perf-label input {
+  width: 8rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.perf-results {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.perf-results ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.perf-render {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-secondary);
+}
+
+.perf-render ul {
+  max-height: 22rem;
+  overflow: auto;
+  padding-left: 1.25rem;
+}
+
 /* --- Manual Theme Toggle --- */
 [data-theme='dark'] {
   color-scheme: dark;

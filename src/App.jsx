@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ErrorBoundary from './error/ErrorBoundary.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import ServerErrorPage from './error/ServerErrorPage.jsx';
+import PerformancePage from './pages/PerformancePage.jsx';
 import { createId } from './lib/id.js';
 import { logger } from './logger/logger.js';
 import { clearLastFatalErrorForUi, readLastFatalErrorForUi } from './error/globalHandlers.js';
@@ -170,6 +171,11 @@ function Throw500() {
   throw new Error('Test 500 (ErrorBoundary demonstration)');
 }
 
+/**
+ * Root UI component.
+ *
+ * @returns {JSX.Element}
+ */
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
   const [route, setRoute] = useState(() => getRouteFromHash());
@@ -207,7 +213,7 @@ function App() {
   useEffect(() => {
     const correlationId = createId();
     log.info('Route changed', { correlationId, context: { route } });
-  }, [route]);
+  }, [route, log]);
 
   useEffect(() => {
     const handler = (ev) => {
@@ -260,6 +266,9 @@ function App() {
     }
     if (route === '/500') {
       return <Throw500 />;
+    }
+    if (route === '/perf') {
+      return <PerformancePage />;
     }
     return <NotFoundPage hash={window.location.hash} />;
   })();
